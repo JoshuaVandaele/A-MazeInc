@@ -130,7 +130,7 @@ local function sleep(n)
 end
 
 local function saveScores(name,moves,timer, map)
-  map = config.mazeDir.."\\"..map
+  map = config.mazeDir.."/"..map
   if debug then
     print("Saving high scores to "..map..".scores")
   end
@@ -153,7 +153,7 @@ local function saveScores(name,moves,timer, map)
 end
 
 local function showScores(map)
-  map = config.mazeDir.."\\"..map
+  map = config.mazeDir.."/"..map
   local scores = io.open(map..".scores","r")
   local highScores = scores:read("*a") 
   scores:close()
