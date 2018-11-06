@@ -9,6 +9,7 @@
 --===============================
 local config = dofile("config.ini")
 local sprites = require(config.sprites)
+config.mazeDir = arg[0]:gsub("\\","/"):match("(.*/)")..config.mazeDir
 
 local controls = {
   ["up"] = {"z", "w"},
@@ -264,7 +265,7 @@ local invis_wall = {}
 
 print("What map do you wanna play?")
 if os.getOS() == "windows" then
-  os.execute("dir /b "..config.mazeDir.."\\*.maze")
+  os.execute("dir /b \""..config.mazeDir.."\\*.maze\"")
 end
 local map = io.read():gsub("%.maze","")..".maze"
 local mapName = map:match("(.+)%..+")
@@ -426,3 +427,6 @@ while true do
   end
   clear()
 end
+
+print("Press ENTER to continue.")
+io.read()
