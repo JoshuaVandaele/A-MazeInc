@@ -9,7 +9,7 @@
 --===============================
 local config = dofile("config.ini")
 local sprites = require(config.sprites)
-config.mazeDir = arg[0]:gsub("\\","/"):match("(.*/)")..config.mazeDir
+config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.mazeDir
 
 local controls = {
   ["up"] = {"z", "w"},
@@ -81,10 +81,8 @@ function mapToTbl(map)
 end
 
 local function clear()
-  if not os.getOS() == "windows" then 
-    os.execute("clear")                                         --TRIES TO CLEAR THE CONSOLE UNDER LINUX AND WINDOWS, SO IT WORKS ON BOTH
-  else
-    os.execute("cls")
+  for i = 1, 255 do
+      print()
   end
 end
 
