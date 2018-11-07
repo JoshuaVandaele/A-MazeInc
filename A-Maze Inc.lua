@@ -8,6 +8,7 @@
 local config = dofile("config.ini")
 local sprites = require(config.sprites)
 config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.mazeDir
+config.scoresDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.scoresDir
 
 local movesCtrls = {
 }
@@ -145,13 +146,13 @@ local function Lines(text)
 end
 
 local function saveScores(name,moves,timer, map)
-  map = config.mazeDir.."/"..map
+  map = config.scoresDir.."/"..map
   if debug then
-    print("Saving high scores to "..map..".scores")
+    print("Saving high scores to "..map..config.scoresExt)
   end
-  local scores = io.open(map..".scores","r+")
+  local scores = io.open(map..config.scoresExt,"r+")
   if not scores then
-    scores = io.open(map..".scores","w")
+    scores = io.open(map..config.scoresExt,"w")
     scores:write("{{[\"m\"] = "..moves..", [\"n\"] = \'"..name.."\',[\"t\"] = "..timer.."}}")
     scores:close()
     return
@@ -162,14 +163,14 @@ local function saveScores(name,moves,timer, map)
   table.insert(Hscores, {["m"] = moves, ["n"] = name,["t"] = timer})
   local Hscores = table_to_string(Hscores)                  --SAVES HIGH SCORES
   if debug then print(Hscores) end
-  local scores = io.open(map..".scores","w+")
+  local scores = io.open(map..config.scoresExt,"w+")
   scores:write(Hscores)
   scores:close()
 end
 
 local function showScores(map)
-  map = config.mazeDir.."/"..map
-  local scores = io.open(map..".scores","r")
+  map = config.scoresDir.."/"..map
+  local scores = io.open(map..config.scoresExt,"r")
   local highScores = scores:read("*a") 
   scores:close()
   highScores = load("return "..highScores)()
@@ -310,24 +311,24 @@ local mapStr = io.read()
 if mapStr:upper() == "D" then
   local scoreList
   if os.getOS() == "windows" then
-    scoreList = io.popen("dir /b \""..config.mazeDir.."\\*.scores"):read("*a")
+    scoreList = io.popen("dir /b \""..config.scoresDir.."\\*.scores"):read("*a")
   else
-    scoreList = io.popen("find "..config.mazeDir.." -iname \"*.scores\""):read("*a")
+    scoreList = io.popen("find "..config.scoresDir.." -iname \"*.scores\""):read("*a")
   end
   scoreList = "{\""..scoreList:gsub("\n","\",\n\"").."\"}"
   scoreList = load("return "..scoreList)()
   
   for _,file in pairs(scoreList) do
     if os.getOS() == "windows" then
-      file = config.mazeDir.."/"..file
+      file = config.scoresDir.."/"..file
     end
     os.remove(file)
   end
   os.exit()
 elseif mapStr:upper() == "DS" then
   print("Delete scores for which map?")
-  local YourTimeHasBegun = io.read():gsub(".scores",""):gsub(".maze","")
-  os.remove(config.mazeDir.."/"..YourTimeHasBegun..".scores")
+  local YourTimeHasBegun = io.read():gsub(config.scoresExt,""):gsub(".maze","")
+  os.remove(config.scoresDir.."/"..YourTimeHasBegun..config.scoresExt)
   os.exit()
 elseif mapStr:lower() == "exit" or mapStr:lower() == "e" then
   os.exit()
@@ -339,7 +340,7 @@ if mapStr:lower() == "random" then
   map = require("maze-generator")
 else
   local mapStr = mapStr:gsub("%"..config.mazeDir,"")..config.mazeExt
-  local mapName = mapStr:match("(.+)%..+")
+  mapName = mapStr:match("(.+)%..+")
   print("Loading the maze...")
   print(funfact[math.random(#funfact)])
   local mapf = io.open(config.mazeDir.."/"..mapStr,"rb")
