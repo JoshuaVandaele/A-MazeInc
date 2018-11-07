@@ -291,16 +291,49 @@ local map, spawnX, spawnY, sizeX, sizeY, x, y
 local teleport = {X1 = -1, X2 = -1, Y1 = -1, Y2 = -1}
 local invis_wall = {}
 
+print(os.getOS())
 print("What maze do you wanna play?")
 if os.getOS() == "windows" then
   os.execute("dir /b \""..config.mazeDir.."\\*"..config.mazeExt.."\"")
 else
   print("(Just write the file name, the directory isn't required.)")
-  os.execute("find "..config.mazeDir.." -iname *"..config.mazeExt)
+  os.execute("find "..config.mazeDir.." -iname \"*"..config.mazeExt.."\"")
 end
+print("\nOther options: ")
 print("Random (Might not be possible to finish)")
+print("Delete all scores (D)")
+print("Delete specific score (DS)")
+print("Exit")
 
-local mapStr = io.read():gsub("%"..config.mazeDir,"")..config.mazeExt
+local mapStr = io.read()
+
+if mapStr:upper() == "D" then
+  local scoreList
+  if os.getOS() == "windows" then
+    scoreList = io.popen("dir /b \""..config.mazeDir.."\\*.scores"):read("*a")
+  else
+    scoreList = io.popen("find "..config.mazeDir.." -iname \"*.scores\""):read("*a")
+  end
+  scoreList = "{\""..scoreList:gsub("\n","\",\n\"").."\"}"
+  scoreList = load("return "..scoreList)()
+  
+  for _,file in pairs(scoreList) do
+    if os.getOS() == "windows" then
+      file = config.mazeDir.."/"..file
+    end
+    os.remove(file)
+  end
+  os.exit()
+elseif mapStr:upper() == "DS" then
+  print("Delete scores for which map?")
+  local YourTimeHasBegun = io.read():gsub(".scores",""):gsub(".maze","")
+  os.remove(config.mazeDir.."/"..YourTimeHasBegun..".scores")
+  os.exit()
+elseif mapStr:lower() == "exit" or mapStr:lower() == "e" then
+  os.exit()
+end
+
+local mapStr = mapStr:gsub("%"..config.mazeDir,"")..config.mazeExt
 local mapName = mapStr:match("(.+)%..+")
 
 ::START::
