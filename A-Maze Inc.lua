@@ -262,10 +262,10 @@ local invis_wall = {}
 
 print("What map do you wanna play?")
 if os.getOS() == "windows" then
-  os.execute("dir /b \""..config.mazeDir.."\\*.maze\"")
+  os.execute("dir /b \""..config.mazeDir.."\\*"..config.mazeExt.."\"")
 else
   print("(Just type the file name)")
-  os.execute("find "..config.mazeDir.." -iname *.maze")
+  os.execute("find "..config.mazeDir.." -iname *"..config.mazeExt)
 end
 
 local map = io.read():gsub("%.maze","")..".maze"
