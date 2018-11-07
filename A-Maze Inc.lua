@@ -7,7 +7,8 @@
 --===============================
 local config = dofile("config.ini")
 local sprites = require(config.sprites)
-config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.mazeDir
+config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..
+config.mazeDir
 
 local movesCtrls = {
 }
@@ -69,7 +70,7 @@ function table_to_string(tbl)
 end
 
 function error(text)
-  print("AN ERROR OCCURED:\n"..text)      --EASY TO READ ERROR MESSAGE FOR USERS
+  print("AN ERROR OCCURED:\n"..text)     --EASY TO READ ERROR MESSAGE FOR USERS
   os.exit()
 end
 
@@ -88,7 +89,7 @@ function mapToTbl(map)
   line = {}
   table.insert(maptbl, line)
   for i = 1, #map do
-      local c = map:sub(i,i)                                  --TRANSFORMS THE STRING OF THE MAP INTO A 2D ARRAY
+      local c = map:sub(i,i) --TRANSFORMS THE STRING OF THE MAP INTO A 2D ARRAY
       if c == "\n" then
           line = {}
           table.insert(maptbl, line)
@@ -101,7 +102,7 @@ end
 
 local function clear()
   if not os.execute("cls") then
-    if not os.execute("clear") then                           --CLEAR SCREEN
+    if not os.execute("clear") then                              --CLEAR SCREEN
       for i = 1, 255 do
           print()
       end
@@ -115,7 +116,7 @@ local function CheckMap(map)
     error("You probably need a map to play right? With walls and stuff.")
   elseif not map:find(sprites.goal) then
     error("Hey! what's your goal?")
-  elseif not map:find(sprites.ground) then                                  --CHECKS MAP CONTENT
+  elseif not map:find(sprites.ground) then                 --CHECKS MAP CONTENT
     error("Where will you walk? Certainly not on the non-existing ground.")
   elseif not map:find(sprites.character) then
     error("You can't play without a character, buddy. I tried once, it went badly.")
@@ -131,7 +132,7 @@ local function Lines(text)
       return nil
     end
     state[3] = line_n + 1
-    local b, e = text:find("\n", begin, true)                   --TO ITERATE THROUGH LINES
+    local b, e = text:find("\n", begin, true)        --TO ITERATE THROUGH LINES
     if b then
       state[2] = e+1
       return line_n, text:sub(begin, e-1)
@@ -152,16 +153,17 @@ local function saveScores(name,moves,timer, map)
   local scores = io.open(map..".scores","r+")
   if not scores then
     scores = io.open(map..".scores","w")
-    scores:write("{{[\"m\"] = "..moves..", [\"n\"] = \'"..name.."\',[\"t\"] = "..timer.."}}")
+    scores:write("{{[\"m\"] = "..moves..", [\"n\"] = \'"..name..
+      "\',[\"t\"] = "..timer.."}}")
     scores:close()
     return
   end
   local Hscores = scores:read("*a")
   scores:close()
   local Hscores = load("return "..Hscores)()
-  table.insert(Hscores, {["m"] = moves, ["n"] = name,["t"] = timer})              --SAVES HIGH SCORES
+  table.insert(Hscores, {["m"] = moves, ["n"] = name,["t"] = timer})              
   local Hscores = table_to_string(Hscores)
-  if debug then print(Hscores) end
+  if debug then print(Hscores) end                          --SAVES HIGH SCORES
   local scores = io.open(map..".scores","w+")
   scores:write(Hscores)
   scores:close()
@@ -173,21 +175,22 @@ local function showScores(map)
   local highScores = scores:read("*a") 
   scores:close()
   highScores = load("return "..highScores)()
-  table.sort(highScores, function(a,b)                                          --COMPLEMENT TO WIN FUNCTION
+  table.sort(highScores, function(a,b)             --COMPLEMENT TO WIN FUNCTION
      return a.m < b.m or a.m == b.m and a.t > b.t
   end)
   for k,v in pairs(highScores) do
     local mark = math.random(1,2)
     if mark == 1 then mark = "." else mark = "!" end
-    print(v.n.." completed this maze in: "..v.t.." secs and "..v.m.." moves"..mark)
+    print(v.n.." completed this maze in: "..v.t.." secs and "
+      ..v.m.. " moves"..mark)
   end
 end
 
 local function resizeCMD(lines,cols)
   if not config.resizeCMD then return end
   if os.getOS() == "windows" then
-    os.execute("mode con: cols="..(cols+2).." lines="..(lines+1))      --RESIZE CMD TO MAZE SIZE
-  else
+    os.execute("mode con: cols="..(cols+2).." lines="..(lines+1))      
+  else                                                --RESIZE CMD TO MAZE SIZE
     os.execute("printf '\\e[8;"..(lines+1)..";"..(cols).."t'")
   end
 end
@@ -197,7 +200,7 @@ local function win(moves,timer, map)
   resizeCMD(50,80)
   clear()
   print("ENTER YOUR USERNAME:")
-  local name = io.read()                                --DISPLAYS HIGH SCORES AT 
+  local name = io.read()                                 --DISPLAYS HIGH SCORES
   clear()
   io.write("\n\n" .. sprites.win_msg .. "\n\n")
   print()
@@ -209,7 +212,7 @@ end
 local function loose()
   resizeCMD(50,80)
   clear()
-  io.write("\n\n" .. sprites.loose_msg .. "\n\n")                       --RIP
+  io.write("\n\n" .. sprites.loose_msg .. "\n\n")                         --RIP
   print()
   os.exit()
 end
@@ -220,7 +223,7 @@ local function move(k,x,y)
     for action,keys in pairs(types) do
       for _, key in pairs(keys) do
         if k == key then
-          Do = action                                      --CHECKS IF A DIRECTION WAS CHOSEN
+          Do = action                        --CHECKS IF A DIRECTION WAS CHOSEN
         end
       end
     end
@@ -230,7 +233,7 @@ local function move(k,x,y)
     return x, y - 1 
   elseif Do == "left" then
     return x - 1, y
-  elseif Do == "right" then                                 --RETURNS NEW COORDINATES
+  elseif Do == "right" then                           --RETURNS NEW COORDINATES
     return x + 1, y
   elseif Do == "down" then
     return x, y + 1
@@ -245,7 +248,9 @@ local function move(k,x,y)
   return x,y
 end
 
-local function checkMove(x, y, map, sizeX, sizeY,teleport,invis_wall,timer,moves,mapN)
+local function checkMove(x, y, map, sizeX, sizeY, teleport,
+  invis_wall, timer, moves, mapN)
+
   local Tx, Ty
   if not map[y] or not map[y][x] then
     return false
@@ -268,7 +273,7 @@ local function checkMove(x, y, map, sizeX, sizeY,teleport,invis_wall,timer,moves
   end
 
   for _,pos in pairs(invis_wall) do
-    if pos.X == x and pos.Y == y then                             --CHECK IF THE MOVES ARE AVAIBLE
+    if pos.X == x and pos.Y == y then          --CHECK IF THE MOVES ARE AVAIBLE
       return false
     end
   end
@@ -291,14 +296,14 @@ local map, spawnX, spawnY, sizeX, sizeY, x, y
 local teleport = {X1 = -1, X2 = -1, Y1 = -1, Y2 = -1}
 local invis_wall = {}
 
-print("What maze do you wanna play?")
+print("===| What maze do you wanna play? |===")
 if os.getOS() == "windows" then
   os.execute("dir /b \""..config.mazeDir.."\\*"..config.mazeExt.."\"")
 else
   print("(Just write the file name, the directory isn't required.)")
   os.execute("find "..config.mazeDir.." -iname \"*"..config.mazeExt.."\"")
 end
-print("\nOther options: ")
+print("\n==========| Other options: |==========")
 print("Random (Might not be possible to finish)")
 print("Delete all scores (D)")
 print("Delete specific score (DS)")
@@ -310,9 +315,11 @@ local mapStr = io.read()
 if mapStr:upper() == "D" then
   local scoreList
   if os.getOS() == "windows" then
-    scoreList = io.popen("dir /b \""..config.mazeDir.."\\*.scores"):read("*a")
+    scoreList = io.popen("dir /b \""..config.mazeDir.."\\*.scores")
+      :read("*a")
   else
-    scoreList = io.popen("find "..config.mazeDir.." -iname \"*.scores\""):read("*a")
+    scoreList = io.popen("find "..config.mazeDir.." -iname \"*.scores\"")
+      :read("*a")
   end
   scoreList = "{\""..scoreList:gsub("\n","\",\n\"").."\"}"
   scoreList = load("return "..scoreList)()
@@ -352,7 +359,7 @@ map = map:gsub("%-%-(.-)\n","\n")                 --REMOVING COMMENTS
 
 sizeX = map:match('(.-)\n')
 map = map:gsub(sizeX.."\n","")
-sizeY = map:match('(.-)\n')                        --GETTING X / Y (Info at the start)
+sizeY = map:match('(.-)\n')                        --GETTING X / Y 
 map = map:gsub(sizeY.."\n","")
 sizeY,sizeX = tonumber(sizeY),tonumber(sizeX)
 
@@ -414,7 +421,17 @@ for action,keys in pairs(controls.others) do
 end
 
 
-print("Your character is "..sprites.character.." and the walls are "..sprites.wall..". But beware, some walls are invisible or you could even ecounter spikes "..sprites.spikes.." !\nYou may sometimes encounter telepoters that look like this: "..sprites.teleport.." but we're low on energy, so you can only use them once. But the most important of all, your goal is "..sprites.goal.."!")
+print("Your character is "
+  ..sprites.character..
+  " and the walls are "
+  ..sprites.wall..
+  ". But beware, some walls are invisible or you could even ecounter spikes "
+  ..sprites.spikes..
+  " !\nYou may sometimes encounter telepoters that look like this: "
+  ..sprites.teleport..
+  " but we're low on energy, so you can only use them once. "
+  ..sprites.goal.. 
+  " Is the most important of all, it's your goal!")
 
 print("Press ENTER to start!")
 io.read()
