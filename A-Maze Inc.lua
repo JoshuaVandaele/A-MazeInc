@@ -291,7 +291,6 @@ local map, spawnX, spawnY, sizeX, sizeY, x, y
 local teleport = {X1 = -1, X2 = -1, Y1 = -1, Y2 = -1}
 local invis_wall = {}
 
-print(os.getOS())
 print("What maze do you wanna play?")
 if os.getOS() == "windows" then
   os.execute("dir /b \""..config.mazeDir.."\\*"..config.mazeExt.."\"")
@@ -305,6 +304,7 @@ print("Delete all scores (D)")
 print("Delete specific score (DS)")
 print("Exit")
 
+io.write("\n> ")
 local mapStr = io.read()
 
 if mapStr:upper() == "D" then
@@ -337,17 +337,20 @@ local mapStr = mapStr:gsub("%"..config.mazeDir,"")..config.mazeExt
 local mapName = mapStr:match("(.+)%..+")
 
 ::START::
+print(mapStr:lower(),  mapStr:lower() == "random", not false)
+os.execute("pause")
 
-if not mapStr:lower() == "random" then
-print("Loading the maze...")
-print(funfact[math.random(#funfact)])
+if mapStr:lower() == "random" then
+  map = require("maze-generator.lua")
+else
+  print("Loading the maze...")
+  print(funfact[math.random(#funfact)])
   local mapf = io.open(config.mazeDir.."/"..mapStr,"rb")
   if not mapf then error("Was the file name correctly spelled?") end
   map = mapf:read("*a")                             --READING MAP FILE
-  mapf:close()
-else
-  map = dofile("maze-generator.lua")
+  mapf:close()  
 end
+
 map = map:gsub("%-%-(.-)\n","\n")                 --REMOVING COMMENTS
 
 sizeX = map:match('(.-)\n')
