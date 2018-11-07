@@ -54,10 +54,10 @@ function error(text)
   os.exit()
 end
 
-function os.getOS() -- the good ol' trick
+function os.getOS()
   if package.config:sub(1, 1) == '\\' then                    
     return 'windows'
-  elseif  package.config:sub(1, 1) == '/' then
+  elseif  package.config:sub(1, 1) == '/' then                --GET THE OS
     return 'unix'
   else
     return 'unknown'
@@ -82,7 +82,7 @@ end
 
 local function clear()
   if not os.execute("cls") then
-    if not os.execute("clear") then
+    if not os.execute("clear") then                           --CLEAR SCREEN
       for i = 1, 255 do
           print()
       end
@@ -181,16 +181,14 @@ local function win(moves,timer, map)
   print()
   saveScores(name,moves,timer,map)
   showScores(map)
-  sleep(3)
   os.exit()
 end
 
 local function loose()
   resizeCMD(50,80)
   clear()
-  io.write("\n\n" .. sprites.loose_msg .. "\n\n")
+  io.write("\n\n" .. sprites.loose_msg .. "\n\n")                       --RIP
   print()
-  sleep(3)
   os.exit()
 end
 
@@ -239,7 +237,7 @@ local function checkMove(x, y, map, sizeX, sizeY,teleport,invis_wall,timer,moves
   end
 
   for _,pos in pairs(invis_wall) do
-    if pos.X == x and pos.Y == y then
+    if pos.X == x and pos.Y == y then                             --CHECK IF THE MOVES ARE AVAIBLE
       return false
     end
   end
