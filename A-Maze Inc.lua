@@ -25,8 +25,12 @@ local controls = {
     ["exit"] = {"e"},
     ["restart"] = {"r"},
   },
+}
 
-
+local funfact = {
+  "Did you know this was originally an old project? Everything got rewrote, except for the sprites.",
+  "I decided to remake this maze because I was bored in class. Yup, that was why.",
+  "I streamed the developement of this on my twitch channel. Promotion time! https://www.twitch.tv/folfy_blue",
 }
 
 local debug = false
@@ -108,15 +112,15 @@ end
 local function CheckMap (map)
   local _, teleport = map:gsub(sprites.teleport,"")
   if map == "" or not map:find(sprites.wall) and not map:find(sprites.inv_wall) then
-    error("You probably need a map to play right ?")
+    error("You probably need a map to play right? With walls and stuff.")
   elseif not map:find(sprites.goal) then
-    error("Hey ! what's your goal ?")
+    error("Hey! what's your goal?")
   elseif not map:find(sprites.ground) then                                  --CHECKS MAP CONTENT
-    error("Where will you walk ? D:")
+    error("Where will you walk? Certainly not on the non-existing ground.")
   elseif not map:find(sprites.character) then
-    error("You can't play without a character, buddy")
+    error("You can't play without a character, buddy. I tried once, it went badly.")
   elseif teleport ~= 0 and teleport ~= 2 then
-    error("You can only have two teleporters max!")
+    error("You can only have two teleporters max! It's just like shoes!")
   end
 end
 
@@ -173,7 +177,9 @@ local function showScores(map)
      return a.m < b.m or a.m == b.m and a.t > b.t
   end)
   for k,v in pairs(highScores) do
-    print(v.n.." Completed this maze in: "..v.t.." secs and "..v.m.." moves.")
+    local mark = math.random(1,2)
+    if mark == 1 then mark = "." else mark = "!" end
+    print(v.n.." completed this maze in: "..v.t.." secs and "..v.m.." moves"..mark)
   end
 end
 
@@ -285,11 +291,11 @@ local map, spawnX, spawnY, sizeX, sizeY, x, y
 local teleport = {X1 = -1, X2 = -1, Y1 = -1, Y2 = -1}
 local invis_wall = {}
 
-print("What map do you wanna play?")
+print("What maze do you wanna play?")
 if os.getOS() == "windows" then
   os.execute("dir /b \""..config.mazeDir.."\\*"..config.mazeExt.."\"")
 else
-  print("(Just type the file name)")
+  print("(Just write the file name, the directory isn't required.)")
   os.execute("find "..config.mazeDir.." -iname *"..config.mazeExt)
 end
 
@@ -298,7 +304,8 @@ local mapName = mapStr:match("(.+)%..+")
 
 ::START::
 
-print("Loading map...")
+print("Loading the maze...")
+print(funfact[math.random(#funfact)])
 
 local mapf = io.open(config.mazeDir.."/"..mapStr,"rb")
 if not mapf then error("Was the file name correctly spelled?") end
@@ -355,7 +362,7 @@ for _,y in pairs(map) do
   end
 end
 
-print("Map loaded.")
+print("Maze loaded! If you see this I hope you have a nice day.")
 clear()
 --===============================
 --==         GAME LOOP         ==
@@ -384,8 +391,7 @@ resizeCMD(sizeY,sizeX)
 clear()
 
 local x, y = spawnX, spawnY
-local oldX, oldY = x, y 
-local newX, newY = x, y
+local oldX, oldY, newX, newY = x, y, x, y
 local teleported = false
 
 while true do
