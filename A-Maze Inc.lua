@@ -109,7 +109,7 @@ local function clear()
   end
 end
 
-local function CheckMap (map)
+local function CheckMap(map)
   local _, teleport = map:gsub(sprites.teleport,"")
   if map == "" or not map:find(sprites.wall) and not map:find(sprites.inv_wall) then
     error("You probably need a map to play right? With walls and stuff.")
@@ -298,20 +298,23 @@ else
   print("(Just write the file name, the directory isn't required.)")
   os.execute("find "..config.mazeDir.." -iname *"..config.mazeExt)
 end
+print("Random (Might not be possible to finish)")
 
 local mapStr = io.read():gsub("%"..config.mazeDir,"")..config.mazeExt
 local mapName = mapStr:match("(.+)%..+")
 
 ::START::
 
+if not mapStr:lower() == "random" then
 print("Loading the maze...")
 print(funfact[math.random(#funfact)])
-
-local mapf = io.open(config.mazeDir.."/"..mapStr,"rb")
-if not mapf then error("Was the file name correctly spelled?") end
-map = mapf:read("*a")                             --READING MAP FILE
-mapf:close()
-
+  local mapf = io.open(config.mazeDir.."/"..mapStr,"rb")
+  if not mapf then error("Was the file name correctly spelled?") end
+  map = mapf:read("*a")                             --READING MAP FILE
+  mapf:close()
+else
+  map = dofile("maze-generator.lua")
+end
 map = map:gsub("%-%-(.-)\n","\n")                 --REMOVING COMMENTS
 
 sizeX = map:match('(.-)\n')
