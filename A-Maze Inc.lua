@@ -7,8 +7,7 @@
 --===============================
 local config = dofile("config.ini")
 local sprites = require(config.sprites)
-config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..
-config.mazeDir
+config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.mazeDir
 
 local movesCtrls = {
 }
@@ -77,7 +76,7 @@ end
 function os.getOS()
   if package.config:sub(1, 1) == '\\' then                    
     return 'windows'
-  elseif  package.config:sub(1, 1) == '/' then                --GET THE OS
+  elseif  package.config:sub(1, 1) == '/' then                     --GET THE OS
     return 'unix'
   else
     return 'unknown'
@@ -153,17 +152,16 @@ local function saveScores(name,moves,timer, map)
   local scores = io.open(map..".scores","r+")
   if not scores then
     scores = io.open(map..".scores","w")
-    scores:write("{{[\"m\"] = "..moves..", [\"n\"] = \'"..name..
-      "\',[\"t\"] = "..timer.."}}")
+    scores:write("{{[\"m\"] = "..moves..", [\"n\"] = \'"..name.."\',[\"t\"] = "..timer.."}}")
     scores:close()
     return
   end
   local Hscores = scores:read("*a")
   scores:close()
   local Hscores = load("return "..Hscores)()
-  table.insert(Hscores, {["m"] = moves, ["n"] = name,["t"] = timer})              
-  local Hscores = table_to_string(Hscores)
-  if debug then print(Hscores) end                          --SAVES HIGH SCORES
+  table.insert(Hscores, {["m"] = moves, ["n"] = name,["t"] = timer})
+  local Hscores = table_to_string(Hscores)                  --SAVES HIGH SCORES
+  if debug then print(Hscores) end
   local scores = io.open(map..".scores","w+")
   scores:write(Hscores)
   scores:close()
@@ -181,16 +179,15 @@ local function showScores(map)
   for k,v in pairs(highScores) do
     local mark = math.random(1,2)
     if mark == 1 then mark = "." else mark = "!" end
-    print(v.n.." completed this maze in: "..v.t.." secs and "
-      ..v.m.. " moves"..mark)
+    print(v.n.." completed this maze in: "..v.t.." secs and "..v.m.." moves"..mark)
   end
 end
 
 local function resizeCMD(lines,cols)
   if not config.resizeCMD then return end
-  if os.getOS() == "windows" then
+  if os.getOS() == "windows" then                     --RESIZE CMD TO MAZE SIZE
     os.execute("mode con: cols="..(cols+2).." lines="..(lines+1))      
-  else                                                --RESIZE CMD TO MAZE SIZE
+  else
     os.execute("printf '\\e[8;"..(lines+1)..";"..(cols).."t'")
   end
 end
@@ -200,7 +197,7 @@ local function win(moves,timer, map)
   resizeCMD(50,80)
   clear()
   print("ENTER YOUR USERNAME:")
-  local name = io.read()                                 --DISPLAYS HIGH SCORES
+  local name = io.read()                              --DISPLAYS HIGH SCORES AT 
   clear()
   io.write("\n\n" .. sprites.win_msg .. "\n\n")
   print()
@@ -248,9 +245,7 @@ local function move(k,x,y)
   return x,y
 end
 
-local function checkMove(x, y, map, sizeX, sizeY, teleport,
-  invis_wall, timer, moves, mapN)
-
+local function checkMove(x, y, map, sizeX, sizeY,teleport,invis_wall,timer,moves,mapN)
   local Tx, Ty
   if not map[y] or not map[y][x] then
     return false
@@ -315,11 +310,9 @@ local mapStr = io.read()
 if mapStr:upper() == "D" then
   local scoreList
   if os.getOS() == "windows" then
-    scoreList = io.popen("dir /b \""..config.mazeDir.."\\*.scores")
-      :read("*a")
+    scoreList = io.popen("dir /b \""..config.mazeDir.."\\*.scores"):read("*a")
   else
-    scoreList = io.popen("find "..config.mazeDir.." -iname \"*.scores\"")
-      :read("*a")
+    scoreList = io.popen("find "..config.mazeDir.." -iname \"*.scores\""):read("*a")
   end
   scoreList = "{\""..scoreList:gsub("\n","\",\n\"").."\"}"
   scoreList = load("return "..scoreList)()
@@ -359,7 +352,7 @@ map = map:gsub("%-%-(.-)\n","\n")                 --REMOVING COMMENTS
 
 sizeX = map:match('(.-)\n')
 map = map:gsub(sizeX.."\n","")
-sizeY = map:match('(.-)\n')                        --GETTING X / Y 
+sizeY = map:match('(.-)\n')                        --GETTING X / Y (Info at the start)
 map = map:gsub(sizeY.."\n","")
 sizeY,sizeX = tonumber(sizeY),tonumber(sizeX)
 
@@ -421,17 +414,7 @@ for action,keys in pairs(controls.others) do
 end
 
 
-print("Your character is "
-  ..sprites.character..
-  " and the walls are "
-  ..sprites.wall..
-  ". But beware, some walls are invisible or you could even ecounter spikes "
-  ..sprites.spikes..
-  " !\nYou may sometimes encounter telepoters that look like this: "
-  ..sprites.teleport..
-  " but we're low on energy, so you can only use them once. "
-  ..sprites.goal.. 
-  " Is the most important of all, it's your goal!")
+print("Your character is "..sprites.character.." and the walls are "..sprites.wall..". But beware, some walls are invisible or you could even ecounter spikes "..sprites.spikes.." !\nYou may sometimes encounter telepoters that look like this: "..sprites.teleport.." but we're low on energy, so you can only use them once. But the most important of all, your goal is "..sprites.goal.."!")
 
 print("Press ENTER to start!")
 io.read()
