@@ -2,8 +2,6 @@
 --==    Made By Folfy Blue     ==
 --===============================
 
-
-
 --===============================
 --==        INITALIZING        ==
 --===============================
@@ -11,11 +9,24 @@ local config = dofile("config.ini")
 local sprites = require(config.sprites)
 config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.mazeDir
 
+local movesCtrls = {
+}
+
 local controls = {
-  ["up"] = {"z", "w"},
-  ["left"] = {"q", "a"},
-  ["right"] = {"d"},
-  ["down"] = {"s"},
+  ["move"] = {
+    ["up"] = {"z", "w"},
+    ["left"] = {"q", "a"},
+    ["right"] = {"d"},
+    ["down"] = {"s"},
+  },
+
+  ["others"] = {
+    ["debug"] = {"0"},
+    ["exit"] = {"e"},
+    ["restart"] = {"r"},
+  },
+
+
 }
 
 local debug = false
@@ -23,6 +34,10 @@ if debug then config.resizeCMD = false end
 --===============================
 --==         FUNCTIONS         ==
 --===============================
+
+function firstToUpper(str)
+    return (str:gsub("^%l", string.upper))
+end
 
 function table_to_string(tbl)
     local result = "{"
@@ -163,9 +178,10 @@ local function showScores(map)
 end
 
 local function resizeCMD(lines,cols)
-  if os.getOS() == "windows" and config.resizeCMD then
+  if not config.resizeCMD then return end
+  if os.getOS() == "windows" then
     os.execute("mode con: cols="..(cols+2).." lines="..(lines+1))      --RESIZE CMD TO MAZE SIZE
-  elseif config.resizeCMD then
+  else
     os.execute("printf '\\e[8;"..(lines+1)..";"..(cols).."t'")
   end
 end
@@ -193,22 +209,31 @@ local function loose()
 end
 
 local function move(k,x,y)
-  local moveTo = ""
-  for direction,keys in pairs(controls) do
-    for _, key in pairs(keys) do
-      if k == key then
-        moveTo = direction                                      --CHECKS IF A DIRECTION WAS CHOSEN
+  local Do
+  for _,types in pairs(controls) do
+    for action,keys in pairs(types) do
+      for _, key in pairs(keys) do
+        if k == key then
+          Do = action                                      --CHECKS IF A DIRECTION WAS CHOSEN
+        end
       end
     end
   end
-  if moveTo == "up" then
+
+  if Do == "up" then
     return x, y - 1 
-  elseif moveTo == "left" then
+  elseif Do == "left" then
     return x - 1, y
-  elseif moveTo == "right" then                                 --RETURNS NEW COORDINATES
+  elseif Do == "right" then                                 --RETURNS NEW COORDINATES
     return x + 1, y
-  elseif moveTo == "down" then
+  elseif Do == "down" then
     return x, y + 1
+  elseif Do == "debug" then
+    debug = not debug
+  elseif Do == "restart" then
+    return "restart"
+  elseif Do == "exit" then
+    os.exit()
   end
 
   return x,y
@@ -268,12 +293,14 @@ else
   os.execute("find "..config.mazeDir.." -iname *"..config.mazeExt)
 end
 
-local map = io.read():gsub("%"..config.mazeDir,"")..config.mazeExt
-local mapName = map:match("(.+)%..+")
+local mapStr = io.read():gsub("%"..config.mazeDir,"")..config.mazeExt
+local mapName = mapStr:match("(.+)%..+")
+
+::START::
 
 print("Loading map...")
 
-local mapf = io.open(config.mazeDir.."/"..map,"rb")
+local mapf = io.open(config.mazeDir.."/"..mapStr,"rb")
 if not mapf then error("Was the file name correctly spelled?") end
 map = mapf:read("*a")                             --READING MAP FILE
 mapf:close()
@@ -335,9 +362,15 @@ clear()
 --===============================
 
 print("Controls:")
-for direction,keys in pairs(controls) do
+for direction,keys in pairs(controls.move) do
   print("To go "..direction..": "..table.concat(keys, " OR "):upper())
 end
+print()
+for action,keys in pairs(controls.others) do
+  print("To "..action..": "..table.concat(keys, " OR "):upper())
+end
+
+
 print("Your character is "..sprites.character.." and the walls are "..sprites.wall..". But beware, some walls are invisible or you could even ecounter spikes "..sprites.spikes.." !\nYou may sometimes encounter telepoters that look like this: "..sprites.teleport.." but we're low on energy, so you can only use them once. But the most important of all, your goal is "..sprites.goal.."!")
 
 print("Press ENTER to start!")
@@ -361,7 +394,7 @@ while true do
   if debug then
     print("X = "..x.."   oldX = "..oldX.."   sizeX = "..sizeX.."   newX = "..newX.."   teleportX = "..tostring(teleportX).." teleport.X1,2 = "..teleport.X1..", "..teleport.X2)
     print("Y = "..y.."   oldY = "..oldY.."   sizeY = "..sizeY.."   newY = "..newY.."   teleportY = "..tostring(teleportY).." teleport.Y1,2 = "..teleport.Y1..", "..teleport.Y2)      -- FOR DEBUG
-    print("walkingOn = "..walkingOn) 
+    print("moves = "..moves.." started at: "..timer.." ("..(os.time() - timer).."s)") 
   end
   
   if x > sizeX or y > sizeY then error("How'd you get over here anyways?") end                          --ERROR CATCHING
@@ -376,7 +409,8 @@ while true do
   local INPUT = io.read():lower():sub(1,1)
   moves = moves+1
   newX, newY = move(INPUT,x,y)           --TRIES TO MOVE
-  
+  if newX == "restart" then goto START end
+
   local canMove,teleportX,teleportY = checkMove(newX, newY ,map, sizeX, sizeY,teleport,invis_wall,timer,moves,mapName)
 
   if canMove then
@@ -426,5 +460,5 @@ while true do
   clear()
 end
 
-print("Press ENTER to continue.")
+print("You somehow got here. Press ENTER to continue.")
 io.read()
