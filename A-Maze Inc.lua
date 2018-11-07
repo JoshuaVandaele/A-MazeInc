@@ -81,8 +81,12 @@ function mapToTbl(map)
 end
 
 local function clear()
-  for i = 1, 255 do
-      print()
+  if not os.execute("cls") then
+    if not os.execute("clear") then
+      for i = 1, 255 do
+          print()
+      end
+    end
   end
 end
 
@@ -119,13 +123,6 @@ local function Lines(text)
   end
   local state = {text, 1, 1}
   return next_line, state
-end
-
-local function sleep(n)
-  n = tonumber(n)
-  if not os.execute("timeout " .. n .. " >NUL") then            --WAITS n SECONDS
-    os.execute("sleep " .. n)
-  end
 end
 
 local function saveScores(name,moves,timer, map)
@@ -165,11 +162,17 @@ local function showScores(map)
   end
 end
 
+local function resizeCMD(lines,cols)
+  if os.getOS() == "windows" and config.resizeCMD then
+    os.execute("mode con: cols="..(cols+2).." lines="..(lines+1))      --RESIZE CMD TO MAZE SIZE
+  elseif config.resizeCMD then
+    os.execute("printf '\\e[8;"..(lines+1)..";"..(cols).."t'")
+  end
+end
+
 local function win(moves,timer, map)
   timer = os.time() - timer
-  if os.getOS() == "windows" then
-    os.execute("mode con: cols=80 lines=50")
-  end
+  resizeCMD(50,80)
   clear()
   print("ENTER YOUR USERNAME:")
   local name = io.read()                                --DISPLAYS HIGH SCORES AT 
@@ -183,9 +186,7 @@ local function win(moves,timer, map)
 end
 
 local function loose()
-  if os.getOS() == "windows" then
-    os.execute("mode con: cols=80 lines=50")
-  end
+  resizeCMD(50,80)
   clear()
   io.write("\n\n" .. sprites.loose_msg .. "\n\n")
   print()
@@ -264,7 +265,11 @@ local invis_wall = {}
 print("What map do you wanna play?")
 if os.getOS() == "windows" then
   os.execute("dir /b \""..config.mazeDir.."\\*.maze\"")
+else
+  print("(Just type the file name)")
+  os.execute("find "..config.mazeDir.." -iname *.maze")
 end
+
 local map = io.read():gsub("%.maze","")..".maze"
 local mapName = map:match("(.+)%..+")
 
@@ -326,7 +331,6 @@ for _,y in pairs(map) do
 end
 
 print("Map loaded.")
-sleep(1)
 clear()
 --===============================
 --==         GAME LOOP         ==
@@ -344,9 +348,7 @@ io.read()
 local timer = os.time()
 local moves = 0
 
-if os.getOS() == "windows" and config.resizeCMD then
-  os.execute("mode con: cols="..(sizeX+1).." lines="..sizeY+2)      --RESIZE CMD TO MAZE SIZE
-end
+resizeCMD(sizeY,sizeX)
 
 clear()
 
