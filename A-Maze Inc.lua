@@ -386,7 +386,6 @@ clear()
 local x, y = spawnX, spawnY
 local oldX, oldY = x, y 
 local newX, newY = x, y
-local walkingOn = sprites.ground
 local teleported = false
 
 while true do
