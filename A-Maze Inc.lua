@@ -268,7 +268,7 @@ else
   os.execute("find "..config.mazeDir.." -iname *"..config.mazeExt)
 end
 
-local map = io.read():gsub("%.maze","")..".maze"
+local map = io.read():gsub("%"..config.mazeDir,"")..config.mazeExt
 local mapName = map:match("(.+)%..+")
 
 print("Loading map...")
