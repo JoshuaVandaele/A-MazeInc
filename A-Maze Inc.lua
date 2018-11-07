@@ -333,16 +333,13 @@ elseif mapStr:lower() == "exit" or mapStr:lower() == "e" then
   os.exit()
 end
 
-local mapStr = mapStr:gsub("%"..config.mazeDir,"")..config.mazeExt
-local mapName = mapStr:match("(.+)%..+")
-
 ::START::
-print(mapStr:lower(),  mapStr:lower() == "random", not false)
-os.execute("pause")
 
 if mapStr:lower() == "random" then
-  map = require("maze-generator.lua")
+  map = require("maze-generator")
 else
+  local mapStr = mapStr:gsub("%"..config.mazeDir,"")..config.mazeExt
+  local mapName = mapStr:match("(.+)%..+")
   print("Loading the maze...")
   print(funfact[math.random(#funfact)])
   local mapf = io.open(config.mazeDir.."/"..mapStr,"rb")
