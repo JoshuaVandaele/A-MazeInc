@@ -76,25 +76,11 @@ function generate(maxX,maxY)
 
 end
 
-print("What will be the maximum X of the maze? (Leave empty for random)")
-local choice = tonumber(io.read())
-if choice then
-  maxX = choice
-else
-  maxX = math.random(1,60)
-end
-
-print("What will be the maximum Y of the maze? (Leave empty for random)")
-choice = tonumber(io.read())
-if choice then
-  maxY = choice
-else
-  maxY = math.random(1,60)
-end
-
+maxX = math.random(1,60)
+maxY = math.random(1,60)
 print(""..maxX.."x"..maxY.." maze.")
 
-map = generate(maxX,maxY)
+local map = generate(maxX,maxY)
 
 print("/!\\ I HAVE NO IDEA HOW TO GENERATE MAZES, THIS WAS MADE BY PURE RANDOMNESS AND MIGHT NOT BE POSSIBLE, BLAME YOUR RANDOM SEED. /!\\")
 return map
