@@ -11,4 +11,5 @@ CHANGELOG:
 + Doors and keys
 + It's already past the 60s, time to add colors!
 + Thingy around the map!
++ Verification for exit
 * Bug fixes
