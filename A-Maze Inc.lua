@@ -410,8 +410,8 @@ elseif mapStr == "U" then
     if os.getOS() == "windows" then
       local cmd = [[@echo off
 set D=%CD%
-echo.move "%CD%\REPLACE_ME_MAZEDIR" "%temp%/REPLACE_ME_MAZEDIR"> ../tmp.bat
-echo.move "%CD%\REPLACE_ME_SCOREDIR" "%temp%/REPLACE_ME_SCOREDIR"> ../tmp.bat
+echo.move /Y "%CD%\REPLACE_ME_MAZEDIR" "%temp%/REPLACE_ME_MAZEDIR"> ../tmp.bat
+echo.move /Y "%CD%\REPLACE_ME_SCOREDIR" "%temp%/REPLACE_ME_SCOREDIR"> ../tmp.bat
 echo.rmdir /S %D%>> ../tmp.bat
 echo.git clone https://github.com/FolfyBlue/A-MazeInc.git>> ../tmp.bat
 echo.move /Y "%temp%\REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.bat
@@ -428,12 +428,12 @@ tmp.bat]];cmd = cmd:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_S
     else
       local cmd = [[
 D=$PWD
-echo mv "$D/REPLACE_ME_MAZEDIR" "/tmp/REPLACE_ME_MAZEDIR"> ../tmp.sh
-echo mv "$D/REPLACE_ME_SCOREDIR" "/tmp/REPLACE_ME_SCOREDIR"> ../tmp.sh
+echo mv -f "$D/REPLACE_ME_MAZEDIR" "/tmp"> ../tmp.sh
+echo mv -f "$D/REPLACE_ME_SCOREDIR" "/tmp"> ../tmp.sh
 echo rm -rf "$D">> ../tmp.sh
 echo git clone https://github.com/FolfyBlue/A-MazeInc.git>> ../tmp.sh
-echo mv "/temp/REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.sh
-echo mv "/temp/REPLACE_ME_SCOREDIR" A-MazeInc>> ../tmp.sh
+echo mv -f "/tmp/REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.sh
+echo mv -f "/tmp/REPLACE_ME_SCOREDIR" A-MazeInc>> ../tmp.sh
 echo rm tmp.sh>>../tmp.sh
 cd ..
 chmod +x tmp.sh
@@ -444,7 +444,6 @@ chmod +x tmp.sh
       os.execute("chmod +x update.sh")
       os.execute("./update.sh")
       os.execute("chmod +x ../tmp.sh")
-      os.execute("gnome-terminal -- lua A-MazeInc.lua")
       os.exit()
     end
   else
