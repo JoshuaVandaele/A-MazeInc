@@ -382,13 +382,15 @@ elseif mapStr == "U" then
     if os.getOS() == "windows" then
       local cmd = [[@echo off
 set D=%CD%
-echo.move "%CD%\mazes" "%temp%/mazes"> ../tmp.bat
+echo.move "%CD%\REPLACE_ME_MAZEDIR" "%temp%/REPLACE_ME_MAZEDIR"> ../tmp.bat
+echo.move "%CD%\REPLACE_ME_SCOREDIR" "%temp%/REPLACE_ME_SCOREDIR"> ../tmp.bat
 echo.rmdir /S %D%>> ../tmp.bat
 echo.git clone https://github.com/FolfyBlue/A-MazeInc.git>> ../tmp.bat
-echo.move /Y "%temp%\mazes" A-MazeInc>> ../tmp.bat
+echo.move /Y "%temp%\REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.bat
+echo.move /Y "%temp%\REPLACE_ME_SCOREDIR" A-MazeInc>> ../tmp.bat
 echo.del tmp.bat>>../tmp.bat
 cd ..
-tmp.bat]]
+tmp.bat]]:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_SCOREDIR",config.scoresDir)
       local f = io.open("update.bat","w+")
       f:write(cmd)
       f:close()
