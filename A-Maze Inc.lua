@@ -10,7 +10,7 @@ local sprites = require(config.sprites)
 config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.mazeDir
 config.scoresDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.scoresDir
 local strings = dofile("langs/"..config.lang..".lang")
-_G.Vers = "1.3a"
+_G.Vers = "1.3"
 
 local movesCtrls = {
 }
