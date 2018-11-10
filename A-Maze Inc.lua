@@ -458,7 +458,7 @@ chmod +x tmp.sh
   mapStr = true
 elseif mapStr == "UD" then
   if os.execute("git --version") then
-    os.execute("git clone https://github.com/FolfyBlue/A-MazeInc.git A-MazeInc_LATEST")
+    os.execute("git clone https://github.com/FolfyBlue/A-MazeInc.git A-MazeIncLATEST")
   else
     print(strings.menu.gitError)
   end
