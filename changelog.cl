@@ -8,3 +8,4 @@ CHANGELOG:
 + You can now see the changelog like you do now
 + You can now see the scores
 + You can now transfer the scores to a text files
++ Doors and keys

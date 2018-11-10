@@ -198,7 +198,7 @@ local function resizeCMD(lines,cols)
   if os.getOS() == "windows" then                     --RESIZE CMD TO MAZE SIZE
     os.execute("mode con: cols="..(cols+2).." lines="..(lines+1))      
   else
-    os.execute("printf '\\e[8;"..(lines+1)..";"..(cols).."t'")
+    os.execute("printf '\\e[8;"..(lines+1)..";"..(cols+1).."t'")
   end
 end
 
@@ -426,7 +426,24 @@ tmp.bat]];cmd = cmd:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_S
       os.execute("cmd /k lua A-MazeInc.lua")
       os.exit()
     else
-      print("Linux support WIP")
+      local cmd = [[
+D=$PWD
+echo mv "$D/REPLACE_ME_MAZEDIR" "/tmp/REPLACE_ME_MAZEDIR"> ../tmp.sh
+echo mv "$D/REPLACE_ME_SCOREDIR" "/tmp/REPLACE_ME_SCOREDIR"> ../tmp.sh
+echo rm -rf "$D">> ../tmp.sh
+echo git clone https://github.com/FolfyBlue/A-MazeInc.git>> ../tmp.sh
+echo mv "/temp/REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.sh
+echo mv "/temp/REPLACE_ME_SCOREDIR" A-MazeInc>> ../tmp.sh
+echo rm tmp.sh>>../tmp.sh
+cd ..
+./tmp.sh]];cmd = cmd:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_SCOREDIR",config.scoresDir)
+      local f = io.open("update.sh","w+")
+      f:write(cmd)
+      f:close()
+      os.execute("chmod +x update.sh")
+      os.execute("./update.sh")
+      os.execute("chmod +x ../tmp.sh")
+      os.execute("gnome-terminal -- lua A-MazeInc.lua")
       os.exit()
     end
   else

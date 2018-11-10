@@ -38,7 +38,7 @@ return {
     ["scores"] = "[S] Show you the scores of a selected map.",
     ["scoresTxt"] = "[ST] Transfer the scores to a human-readable text file.",
     ["Return"] = "[R] Go back to previous menu.",
-    ["gitError"] = "You need git to update! Install it there: https://gitforwindows.org/",
+    ["gitError"] = "You need git to update! Install it there: https://gitforwindows.org/ or https://git-scm.com/download/linux if you're on Linux.",
     ["gitwhich"] = "Do you want to get the latest release [L] or in-dev release [I]?",
     ["scorewhich"] = "You wanna see the scores for which map?",
     ["scorewhichGet"] = "You wanna get the scores for which map?",
