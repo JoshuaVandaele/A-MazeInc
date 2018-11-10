@@ -40,6 +40,10 @@ return {
     ["Return"] = "[R] Go back to previous menu.",
     ["gitError"] = "You need git to update! Install it there: https://gitforwindows.org/",
     ["gitwhich"] = "Do you want to get the latest release [L] or in-dev release [I]?",
+    ["scorewhich"] = "You wanna see the scores for which map?",
+    ["scorewhichGet"] = "You wanna get the scores for which map?",
+    ["scorewhichGot"] = "The scores where placed in %1",
+    
   },
 
   ["loading"] = "Loading the maze...",
@@ -56,6 +60,7 @@ The walls are %2
 But beware, some walls are invisible. 
 There are spikes: %3
 You may sometimes encounter teleporters that look like this: %4 but we're low on energy, so you can only use them once. 
+%6 are doors and %7 is the key to them. You need to have all the keys to open a door.
 Most importently, your goal is %5]],
    ["start"] = "Press ENTER to start!",
   },

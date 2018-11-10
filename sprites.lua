@@ -9,6 +9,8 @@ local spikes = "^" -- Must be only one character
 local teleporter = "0" -- Must be only one character
 local invisible_wall = "W" -- Must be only one character
 local ground = " " -- Must be only one character
+local door = "&" --must be only one character
+local lever = "|" --must be only one character
 local winning_message = "\n  __   __            _    _               _ \n  \\ \\ / /           | |  | |             |"..spikes.."|\n   \\ V /___  _   _  | |  | | ___  _ __   |"..wall.."|\n    \\ // _ \\| | | | | |/\\| |/ _ \\| '_ \\  |"..goal.."|\n    | | (_) | |_| | \\  /\\  / (_) | | | | |"..teleporter.."|\n    \\_/\\___/ \\__,_|  \\/  \\/ \\___/|_| |_| ("..character..")" -- as many crap as you want
 local loose_message = [[                                                                     
  _|      _|                        _|                        _|      
@@ -35,6 +37,8 @@ return {
 ["teleport"] = teleporter, 
 ["inv_wall"] = invisible_wall,
 ["ground"] = ground, 
+["door"] = door,
+["lever"] = lever,
 }
 
 --Ascii art credits: http://patorjk.com/software/taag/

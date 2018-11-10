@@ -177,17 +177,20 @@ end
 local function showScores(map)
   map = config.scoresDir.."/"..map
   local scores = io.open(map..config.scoresExt,"r")
+  if not scores then error("An error occured while opening the scores! Do the scores exist?") end
   local highScores = scores:read("*a") 
   scores:close()
   highScores = load("return "..highScores)()
   table.sort(highScores, function(a,b)             --COMPLEMENT TO WIN FUNCTION
      return a.m < b.m or a.m == b.m and a.t > b.t
   end)
+  local x = ""
   for k,v in pairs(highScores) do
     local mark = math.random(1,2)
-    if mark == 1 then mark = "." else mark = "!" end
-    print(strReplace(map.highscores,v.n,v.t,v.m)..mark)
+    if mark == 1 then mark = ".\n" else mark = "!\n" end
+    x = x..strReplace(strings.highscores,v.n,v.t,v.m)..mark
   end
+  return x
 end
 
 local function resizeCMD(lines,cols)
@@ -209,7 +212,7 @@ local function win(moves,timer, map)
   io.write("\n\n" .. sprites.win_msg .. "\n\n")
   print()
   saveScores(name,moves,timer,map)
-  showScores(map)
+  print(showScores(map))
   os.exit()
 end
 
@@ -258,6 +261,8 @@ local function checkMove(x, y, map, sizeX, sizeY,teleport,invis_wall,timer,moves
     return false
   elseif map[y][x] == sprites.wall then
     return false
+  elseif map[y][x] == sprites.door then
+    return false
   elseif map[y][x] == sprites.goal then 
     win(moves,timer,mapN)
   elseif map[y][x] == sprites.spikes then
@@ -298,28 +303,55 @@ else
   }]].."\nset-title \""..strReplace(strings.title,_G.Vers,firstToUpper(os.getOS())).."\"")
 end
 
+local function colorprint(x)
+  local replacements = {
+      ["character"] = "[96m[1m"..sprites.character.."[0m",
+      ["wall"] = "[34m"..sprites.wall.."[0m",
+      ["goal"] = "[33m"..sprites.goal.."[0m",
+      ["spikes"] = "[90m"..sprites.spikes.."[0m",
+      ["teleport"] = "[37m"..sprites.teleport.."[0m",
+      ["ground"] = sprites.ground,
+      ["door"] = "[32m"..sprites.door.."[0m",
+      ["lever"] = "[95m"..sprites.lever.."[0m",
+    }
+  for k,v in pairs(replacements) do
+    for spriteName, sprite in pairs(sprites) do
+      if sprite == x and spriteName == k then
+        io.write(v)
+      end
+    end
+  end
+end
+
+local function checkDoor(map)
+  local door = false
+  for y,yt in pairs(map) do
+    for _,x in pairs(yt) do 
+      if x == sprites.lever then
+        door = true
+      end      
+    end
+  end
+  if not door then
+    for y,yt in pairs(map) do
+      for xnt,x in pairs(yt) do 
+        if x == sprites.door then
+          map[y][xnt] = sprites.ground
+        end      
+      end
+    end
+  end
+  return map
+end
+
 --===============================
 --==            MAP            ==
 --===============================
 --[[
 TODO:
-START UI FEATURES:
-[R]  - Restart
-[M]  - More options tab
-More options tab sub-menus
-Updates (Haves all update cmds + change log) / Scores (To delete the scores / view them...) /  
-
 Update sub-menu:
 Update Linux compability
 
-Scores sub-menu:
-[S]  - View scores for a map
-[SP] - Transfer the scores to a human-readable text file
-Don't close until a maze is picked OR exit is selected
-
-
-
-Colored characters depending on the type (customizable)
 Other floors for the maps
 V OR ^ depending on direction - Enemy that goes up/down only (Must change default spike sprite; suggestion: *)
 > OR < depending on direction - Enemy that goes left/right only
@@ -327,8 +359,6 @@ X - Enemy that goes random directions
 D - Wall that closes when you pass through it
 F - Same as above but with an invisible wall
 + - Jumps over the wall in front of you IF POSSIBLE
-& - Closed door controlled by levers
-| - Lever for doors, all of them must be enabled to open door
 ° - Easter egg, if walked on does crap to the map
 ]]
 
@@ -337,6 +367,7 @@ local teleport = {X1 = -1, X2 = -1, Y1 = -1, Y2 = -1}
 local invis_wall = {}
 
 ::MENU::
+clear()
 print(strings.menu.maze)
 if os.getOS() == "windows" then
   os.execute("dir /b \""..config.mazeDir.."\\*"..config.mazeExt.."\"")
@@ -345,6 +376,7 @@ else
   os.execute("find "..config.mazeDir.." -iname \"*"..config.mazeExt.."\"")
 end
 print(strings.menu.random)
+print()
 print(strings.menu.more)
 print(strings.menu.exit)
 
@@ -356,10 +388,10 @@ if mapStr:upper() == "M" then
   print(strings.menu.deleteAll)
   print(strings.menu.deleteSpec)
   print()
-  print("WIP:")
   print(strings.menu.update)
   print(strings.menu.updateDir)
   print(strings.menu.updateCheck)
+  print()
   print(strings.menu.changelog)
   print(strings.menu.changelogCheck)
   print()
@@ -386,7 +418,7 @@ echo.move /Y "%temp%\REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.bat
 echo.move /Y "%temp%\REPLACE_ME_SCOREDIR" A-MazeInc>> ../tmp.bat
 echo.del tmp.bat>>../tmp.bat
 cd ..
-tmp.bat]]:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_SCOREDIR",config.scoresDir)
+tmp.bat]];cmd = cmd:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_SCOREDIR",config.scoresDir)
       local f = io.open("update.bat","w+")
       f:write(cmd)
       f:close()
@@ -400,19 +432,33 @@ tmp.bat]]:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_SCOREDIR",c
   else
     print(strings.menu.gitError)
   end
+  mapStr = true
 elseif mapStr == "UD" then
   if os.execute("git --version") then
     os.execute("git clone https://github.com/FolfyBlue/A-MazeInc.git A-MazeInc_LATEST")
   else
     print(strings.menu.gitError)
   end
+  mapStr = true
 elseif mapStr == "C" then
   f = io.open("changelog.cl","r")
-  print(f:read("*a"))
+  local changelog = f:read("*a")
+  print(changelog)
   f:close()
-end
+elseif mapStr == "S" then
+  print(strings.menu.scorewhich)
+  print(showScores(io.read()))
+  mapStr = true
+  elseif mapStr == "ST" then
+  print(strings.menu.scorewhichGet)
+  local which = io.read()
+  f = io.open(which..".txt","w")
+  f:write(showScores(which))
+  f:close()
+  print(strReplace(strings.menu.scorewhichGot,which..".txt"))
+  mapStr = true
 
-if mapStr:upper() == "D" then
+elseif mapStr:upper() == "D" then
   local scoreList
   if os.getOS() == "windows" then
     scoreList = io.popen("dir /b \""..config.scoresDir.."\\*.scores"):read("*a")
@@ -428,14 +474,20 @@ if mapStr:upper() == "D" then
     end
     os.remove(file)
   end
-  os.exit()
+  mapStr = true
 elseif mapStr:upper() == "DS" then
   print(strings.menu.deleteSpecWhich)
   local YourTimeHasBegun = io.read():gsub(config.scoresExt,""):gsub(".maze","")
   os.remove(config.scoresDir.."/"..YourTimeHasBegun..config.scoresExt)
-  os.exit()
+  mapStr = true
 elseif mapStr:lower() == "exit" or mapStr:lower() == "e" then
   os.exit()
+end
+
+if mapStr == true or mapStr == "" then
+  print("Press ENTER to continue.")
+  io.read()
+  goto MENU
 end
 
 ::START::
@@ -534,7 +586,7 @@ for action,keys in pairs(controls.others) do
   print(strReplace(strings.startInfo.action,action):upper()..table.concat(keys, strings.startInfo.OR))
 end
 
-print(strReplace(strings.startInfo.objects,sprites.character,sprites.wall,sprites.spikes,sprites.teleport,sprites.goal))
+print(strReplace(strings.startInfo.objects,sprites.character,sprites.wall,sprites.spikes,sprites.teleport,sprites.goal,sprites.door,sprites.lever))
 
 print(strings.startInfo.start)
 io.read()
@@ -559,10 +611,12 @@ while true do
   end
   
   if x > sizeX or y > sizeY then error(strings.mapError.how) end                          --ERROR CATCHING
-  
+
+  map = checkDoor(map)
+
   for _,y in pairs(map) do
     for _,x in pairs(y) do 
-      io.write(x)                       --SHOWS MAP
+      colorprint(x)                       --SHOWS MAP
     end
     print()
   end
