@@ -310,11 +310,7 @@ More options tab sub-menus
 Updates (Haves all update cmds + change log) / Scores (To delete the scores / view them...) /  
 
 Update sub-menu:
-[U]  - Update via GIT and install it if not installed, have a choice between the latest release or the in-dev version and will start another CMD + close the main process to do that
-[UD] - Update and install the update in a new directory
-[UC] - Check for available updates without installing them
-[C]  - Print GitHub repo + change log
-[CU] - Print change log of available updates if any
+Update Linux compability
 
 Scores sub-menu:
 [S]  - View scores for a map
@@ -399,12 +395,21 @@ tmp.bat]]:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_SCOREDIR",c
       os.exit()
     else
       print("Linux support WIP")
+      os.exit()
     end
   else
     print(strings.menu.gitError)
   end
-elseif mapStr == "" then
-
+elseif mapStr == "UD" then
+  if os.execute("git --version") then
+    os.execute("git clone https://github.com/FolfyBlue/A-MazeInc.git A-MazeInc_LATEST")
+  else
+    print(strings.menu.gitError)
+  end
+elseif mapStr == "C" then
+  f = io.open("changelog.cl","r")
+  print(f:read("*a"))
+  f:close()
 end
 
 if mapStr:upper() == "D" then
