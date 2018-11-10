@@ -500,7 +500,12 @@ elseif mapStr:upper() == "DS" then
   os.remove(config.scoresDir.."/"..YourTimeHasBegun..config.scoresExt)
   mapStr = true
 elseif mapStr:lower() == "exit" or mapStr:lower() == "e" then
-  os.exit()
+  print("Are you sure you want to exit? (Y/N)")
+  if io.read():lower() == "y" then
+    os.exit()
+  else
+    return
+  end
 end
 
 if mapStr == true or mapStr == "" then
