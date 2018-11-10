@@ -9,3 +9,6 @@ CHANGELOG:
 + You can now see the scores
 + You can now transfer the scores to a text files
 + Doors and keys
++ It's already past the 60s, time to add colors!
++ Thingy around the map!
+* Bug fixes

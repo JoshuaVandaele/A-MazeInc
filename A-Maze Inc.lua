@@ -27,6 +27,7 @@ local controls = {
     ["debug"] = {"0"},
     ["exit"] = {"e"},
     ["restart"] = {"r"},
+    ["seeInfo"] = {"c"}
   },
 }
 
@@ -250,6 +251,9 @@ local function move(k,x,y)
     return "restart"
   elseif Do == "exit" then
     os.exit()
+  elseif Do == "seeInfo" then
+    print(strReplace(strings.startInfo.objects,sprites.character,sprites.wall,sprites.spikes,sprites.teleport,sprites.goal,sprites.door,sprites.lever))
+    io.read()
   end
 
   return x,y
@@ -349,9 +353,6 @@ end
 --===============================
 --[[
 TODO:
-Update sub-menu:
-Update Linux compability
-
 Other floors for the maps
 V OR ^ depending on direction - Enemy that goes up/down only (Must change default spike sprite; suggestion: *)
 > OR < depending on direction - Enemy that goes left/right only
@@ -390,10 +391,10 @@ if mapStr:upper() == "M" then
   print()
   print(strings.menu.update)
   print(strings.menu.updateDir)
-  print(strings.menu.updateCheck)
+  --print(strings.menu.updateCheck)
   print()
   print(strings.menu.changelog)
-  print(strings.menu.changelogCheck)
+  --print(strings.menu.changelogCheck)
   print()
   print(strings.menu.scores)
   print(strings.menu.scoresTxt)
@@ -462,6 +463,7 @@ elseif mapStr == "C" then
   local changelog = f:read("*a")
   print(changelog)
   f:close()
+  mapStr = true
 elseif mapStr == "S" then
   print(strings.menu.scorewhich)
   print(showScores(io.read()))
@@ -579,14 +581,8 @@ clear()
 --===============================
 --[[TODO:
 Resize in game loop
-Resize if debug turned on
 Show moves & time on the side 
 Show #1 in moves and #1 in time on the High Score
-A square around the map to see it (Example:
-====
-=#O=
-=@ =
-====
 
 C - See controls & start screen
 P - Pause (Maybe fuse with above suggestion?)
@@ -611,8 +607,9 @@ io.read()
 local timer = os.time()
 local moves = 0
 
-resizeCMD(sizeY,sizeX)
-
+if config.resizeCMD then
+  resizeCMD(sizeY+2,sizeX+1)
+end
 clear()
 
 local x, y = spawnX, spawnY
@@ -630,14 +627,23 @@ while true do
   if x > sizeX or y > sizeY then error(strings.mapError.how) end                          --ERROR CATCHING
 
   map = checkDoor(map)
-
+  for i = 1,#map*2+2 do
+    io.write("[7m=[0m")
+  end
+  print()
   for _,y in pairs(map) do
+    io.write("[7m=[0m")
     for _,x in pairs(y) do 
       colorprint(x)                       --SHOWS MAP
     end
+    io.write("[7m=[0m")
     print()
   end
-  
+  for i = 1,#map*2+2 do
+    io.write("[7m=[0m")
+  end
+  print()
+
   local INPUT = io.read():lower():sub(1,1)
   moves = moves+1
   newX, newY = move(INPUT,x,y)           --TRIES TO MOVE
@@ -649,26 +655,26 @@ while true do
     
     if newX >= sizeX then
       if map[y][1] == sprites.ground or (map[y][1] == sprites.ground and newX-1 == sprites.wall) then
-        newX = 2
+        newX = 1
       else
         newX = newX-1
       end
     elseif newX <= 1 then
-      if map[y][sizeX-1] == sprites.ground or (map[y][sizeX-1] == sprites.ground and newX+1 == sprites.wall) then
-        newX = sizeX-1
+      if map[y][sizeX] == sprites.ground or (map[y][sizeX] == sprites.ground and newX == sprites.wall) then
+        newX = sizeX
       else
-        newX = newX+1
+        newX = newX
       end
     end                                  --GOES TO THE OTHER SIDE OF THE MAP IF AT THE EXTREMITY OF IT
     if newY >= sizeY then
-      if map[1][x] == sprites.ground or (map[1][x] == sprites.ground and newY-1 == sprites.wall) then
-        newY = 2
+      if map[1][x] == sprites.ground or (map[1][x] == sprites.ground and newY == sprites.wall) then
+        newY = 1
       else
         newY = newY-1
       end
     elseif newY <= 1 then
-      if map[sizeY-1][x] == sprites.ground or (map[sizeY-1][x] == sprites.ground and newY+1 == sprites.wall) then
-        newY = sizeY-1
+      if map[sizeY][x] == sprites.ground or (map[sizeY][x] == sprites.ground and newY == sprites.wall) then
+        newY = sizeY
       else
         newY = newY+1
       end
