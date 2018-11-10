@@ -1,7 +1,7 @@
 return {
   ["funfacts"] = {
-    "I decided to remake this maze because I was bored in class. Yup, that was why.",
-    "I streamed the developement of this on my twitch channel. Promotion time! https://www.twitch.tv/folfy_blue",
+    "J'ai recrée ceci car je m'ennuiyait en cours. Yep, c'est pour sa.",
+    "J'ai streamer le développemnt sur Twitch. Promotion! https://www.twitch.tv/folfy_blue",
   },
 
   ["error"] = "UNE ERREUR EST SURVENUE:\n",
@@ -17,37 +17,55 @@ return {
     ["how"] = "How'd you get over here anyways?"
   },
 
-  ["highscores"] = "%1 completed this maze in: %2 secs and %3 moves",
-  ["username"] = "ENTER YOUR USERNAME:",
+  ["highscores"] = "%1 à completer ceci en %2 secs et %3 movements",
+  ["username"] = "ENTRE TON NOM:",
 
   ["menu"] = {
-    ["maze"] = "===| What maze do you wanna play? |===",
-    ["mazeLinux"] = "(Just write the file name, the directory isn't required.)",
-    ["others"] = "\n==========| Other options: |==========",
-    ["random"] = "Random (Might not be possible to finish)",
-    ["deleteAll"] = "Delete all scores (D)",
-    ["deleteSpec"] = "Delete specific score (DS)",
-    ["deleteSpecWhich"] = "Delete scores for which map?",
-    ["exit"] = "Exit",
+    ["maze"] = "===| A quel labyrinthe veut-tu jouer? |===",
+    ["mazeLinux"] = "(Ecris juste le nom du ficher, le directory n'est pas requis.)",
+    ["others"] = "\n===========| Autres options: |===========",
+    ["random"] = "Random (Peut être impossible)",
+    ["deleteAll"] = "Supprimer tout les scores [D]",
+    ["deleteSpec"] = "Supprimer un score specifique [DS]",
+    ["deleteSpecWhich"] = "Les supprimer pour quel map?",
+    ["exit"] = "[E] Quitter",
+    ["more"] = "Appuie sur [M] pour plus d'options.",
+    ["update"] = "[U] Essaye de faire un mise a jour.",
+    ["updateDir"] = "[UD] Fait la mise a jour dans un autre directory.",
+    ["updateCheck"] = "[UC] Dit si une mise a jour est disponible.",
+    ["changelog"] = "[C] Montre la change log.",
+    ["changelogCheck"] = "[CC] Montre la change log de la prochaine mise a jour.",
+    ["scores"] = "[S] Montre les scores d'une map.",
+    ["scoresTxt"] = "[ST] Transferre les scores dans un document texte lisible.",
+    ["Return"] = "[R] Retour",
+    ["gitError"] = "You need git to update! Install it there: https://gitforwindows.org/ or https://git-scm.com/download/linux if you're on Linux.",
+    ["gitwhich"] = "Do you want to get the latest release [L] or in-dev release [I]?",
+    ["scorewhich"] = "Tu veut voir les scores de quel map?",
+    ["scorewhichGet"] = "Tu veut avoir les scores de quel map?",
+    ["scorewhichGot"] = "Les scores sont dans %1",
+    
   },
 
-  ["loading"] = "Loading the maze...",
-  ["loaded"] = "Maze loaded! If you see this I hope you have a nice day.",
+  ["loading"] = "Chargement...",
+  ["loaded"] = "Chargement fini! Si vous voyez sa j'éspére que vous passez une bonne journée.",
 
   ["startInfo"] = {
-    ["controls"] = "Controls:",
-    ["move"] = "To go %1: ",
-    ["or"] = " OR ",
-    ["action"] = "To %1: ",
-    ["objects"] = [[Your character is %1
-The walls are %2
-But beware, some walls are invisible. 
-There are spikes: %3
-You may sometimes encounter teleporters that look like this: %4 but we're low on energy, so you can only use them once. 
-Most importantantly, your goal is %5]],
-   ["start"] = "Press ENTER to start!",
+    ["controls"] = "Controles:",
+    ["move"] = "Vers la %1: ",
+    ["OR"] = " OU ",
+    ["action"] = "Pour %1: ",
+    ["objects"] = [[
+Ton personnage est %1
+Les murs sont %2
+Mais quelque murs sont invisible.
+Il y a des pics: %3
+Tu poura certainement voir des téléporteurs: %4 mais on n'a plus beaucoup d'énérgie, tu pourra seulement les utiliser une seul fois. 
+%6 sont des portes %7 sont leurs clef. Tu as besoin de toute les clef pour ouvrir une porte.
+Et surtout, ton but est %5]],
+   ["start"] = "Appuie sur ENTREE pour commencer!",
   },
 
   ["somehow"] = "You somehow got here. Press ENTER to continue.",
+  ["title"] = "A-Maze Inc V%1 - Fait par Folfy Blue - %2 edition",
 
 }

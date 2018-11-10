@@ -25,8 +25,8 @@ return {
     ["mazeLinux"] = "(Just write the file name, the directory isn't required.)",
     ["others"] = "\n==========| Other options: |==========",
     ["random"] = "Random (Might not be possible to finish)",
-    ["deleteAll"] = "Delete all scores (D)",
-    ["deleteSpec"] = "Delete specific score (DS)",
+    ["deleteAll"] = "Delete all scores [D]",
+    ["deleteSpec"] = "Delete specific score [DS}",
     ["deleteSpecWhich"] = "Delete scores for which map?",
     ["exit"] = "Exit",
     ["more"] = "Press [M] for more options.",
@@ -61,7 +61,7 @@ But beware, some walls are invisible.
 There are spikes: %3
 You may sometimes encounter teleporters that look like this: %4 but we're low on energy, so you can only use them once. 
 %6 are doors and %7 is the key to them. You need to have all the keys to open a door.
-Most importently, your goal is %5]],
+Most importantly, your goal is %5]],
    ["start"] = "Press ENTER to start!",
   },
 
