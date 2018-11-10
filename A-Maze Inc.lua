@@ -250,7 +250,12 @@ local function move(k,x,y)
   elseif Do == "restart" then
     return "restart"
   elseif Do == "exit" then
-    os.exit()
+    print("Are you sure you want to exit? (Y/N)")
+    if io.read():lower() == "y" then
+      os.exit()
+    else
+      return
+    end
   elseif Do == "seeInfo" then
     print(strReplace(strings.startInfo.objects,sprites.character,sprites.wall,sprites.spikes,sprites.teleport,sprites.goal,sprites.door,sprites.lever))
     io.read()
@@ -504,7 +509,7 @@ elseif mapStr:lower() == "exit" or mapStr:lower() == "e" then
   if io.read():lower() == "y" then
     os.exit()
   else
-    return
+    masStr = true
   end
 end
 
