@@ -432,8 +432,8 @@ echo mv -f "$D/REPLACE_ME_MAZEDIR" "/tmp"> ../tmp.sh
 echo mv -f "$D/REPLACE_ME_SCOREDIR" "/tmp"> ../tmp.sh
 echo rm -rf "$D">> ../tmp.sh
 echo git clone https://github.com/FolfyBlue/A-MazeInc.git>> ../tmp.sh
-echo mv -f "/tmp/REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.sh
-echo mv -f "/tmp/REPLACE_ME_SCOREDIR" A-MazeInc>> ../tmp.sh
+echo rsync --remove-source-files "/tmp/REPLACE_ME_MAZEDIR" A-MazeInc/>> ../tmp.sh
+echo rsync --remove-source-files "/tmp/REPLACE_ME_SCOREDIR" A-MazeInc/>> ../tmp.sh
 echo rm tmp.sh>>../tmp.sh
 cd ..
 chmod +x tmp.sh
