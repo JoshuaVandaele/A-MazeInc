@@ -432,8 +432,8 @@ echo mv -f "$D/REPLACE_ME_MAZEDIR" "/tmp"> ../tmp.sh
 echo mv -f "$D/REPLACE_ME_SCOREDIR" "/tmp"> ../tmp.sh
 echo rm -rf "$D">> ../tmp.sh
 echo git clone https://github.com/FolfyBlue/A-MazeInc.git>> ../tmp.sh
-echo rsync --remove-source-files "/tmp/REPLACE_ME_MAZEDIR" A-MazeInc/>> ../tmp.sh
-echo rsync --remove-source-files "/tmp/REPLACE_ME_SCOREDIR" A-MazeInc/>> ../tmp.sh
+echo rsync -av "/tmp/REPLACE_ME_MAZEDIR" A-MazeInc/mazes>> ../tmp.sh
+echo rsync -av "/tmp/REPLACE_ME_SCOREDIR" A-MazeInc/mazes>> ../tmp.sh
 echo rm tmp.sh>>../tmp.sh
 cd ..
 chmod +x tmp.sh
@@ -443,7 +443,7 @@ chmod +x tmp.sh
       f:close()
       os.execute("chmod +x update.sh")
       os.execute("./update.sh")
-      os.execute("chmod +x ../tmp.sh")
+      os.execute("cd ../A-Maze\\ Inc.Lua")
       os.exit()
     end
   else
