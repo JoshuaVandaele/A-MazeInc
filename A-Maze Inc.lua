@@ -250,7 +250,7 @@ local function move(k,x,y)
   elseif Do == "restart" then
     return "restart"
   elseif Do == "exit" then
-    print("Are you sure you want to exit? (Y/N)")
+      print("Are you sure you want to exit? (Y/N)")
     if io.read():lower() == "y" then
       os.exit()
     else
@@ -429,7 +429,7 @@ tmp.bat]];cmd = cmd:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_S
       f:write(cmd)
       f:close()
       os.execute("update.bat")
-      os.execute("cmd /k lua A-MazeInc.lua")
+      os.execute("start cmd /k lua A-MazeInc.lua")
       os.exit()
     else
       local cmd = [[
