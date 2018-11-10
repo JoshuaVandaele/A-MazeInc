@@ -9,6 +9,8 @@ local config = dofile("config.ini")
 local sprites = require(config.sprites)
 config.mazeDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.mazeDir
 config.scoresDir = tostring(arg[0]:gsub("\\","/"):match("(.*/)")):gsub("nil","")..config.scoresDir
+local strings = dofile("langs/"..config.lang..".lang")
+_G.Vers = "1.3a"
 
 local movesCtrls = {
 }
@@ -28,17 +30,21 @@ local controls = {
   },
 }
 
-local funfact = {
-  "Did you know this was originally an old project? Everything got rewrote, except for the sprites.",
-  "I decided to remake this maze because I was bored in class. Yup, that was why.",
-  "I streamed the developement of this on my twitch channel. Promotion time! https://www.twitch.tv/folfy_blue",
-}
+local funfact = strings.funfacts
 
 local debug = false
 if debug then config.resizeCMD = false end
 --===============================
 --==         FUNCTIONS         ==
 --===============================
+
+local function strReplace(str,...)
+  local replacements = {...}
+  for i = 1,#replacements do
+    str = str:gsub("%%"..i,replacements[i])
+  end
+  return str
+end
 
 function firstToUpper(str)
     return (str:gsub("^%l", string.upper))
@@ -70,7 +76,7 @@ function table_to_string(tbl)
 end
 
 function error(text)
-  print("AN ERROR OCCURED:\n"..text)     --EASY TO READ ERROR MESSAGE FOR USERS
+  print(strings.error..text)     --EASY TO READ ERROR MESSAGE FOR USERS
   os.exit()
 end
 
@@ -113,15 +119,15 @@ end
 local function CheckMap(map)
   local _, teleport = map:gsub(sprites.teleport,"")
   if map == "" or not map:find(sprites.wall) and not map:find(sprites.inv_wall) then
-    error("You probably need a map to play right? With walls and stuff.")
+    error(strings.mapError.walls)
   elseif not map:find(sprites.goal) then
-    error("Hey! what's your goal?")
+    error(strings.mapError.goal)
   elseif not map:find(sprites.ground) then                 --CHECKS MAP CONTENT
-    error("Where will you walk? Certainly not on the non-existing ground.")
+    error(strings.mapError.ground)
   elseif not map:find(sprites.character) then
-    error("You can't play without a character, buddy. I tried once, it went badly.")
+    error(strings.mapError.character)
   elseif teleport ~= 0 and teleport ~= 2 then
-    error("You can only have two teleporters max! It's just like shoes!")
+    error(strings.mapError.teleport)
   end
 end
 
@@ -180,7 +186,7 @@ local function showScores(map)
   for k,v in pairs(highScores) do
     local mark = math.random(1,2)
     if mark == 1 then mark = "." else mark = "!" end
-    print(v.n.." completed this maze in: "..v.t.." secs and "..v.m.." moves"..mark)
+    print(strReplace(map.highscores,v.n,v.t,v.m)..mark)
   end
 end
 
@@ -197,7 +203,7 @@ local function win(moves,timer, map)
   timer = os.time() - timer
   resizeCMD(50,80)
   clear()
-  print("ENTER YOUR USERNAME:")
+  print(strings.username)
   local name = io.read()                              --DISPLAYS HIGH SCORES AT 
   clear()
   io.write("\n\n" .. sprites.win_msg .. "\n\n")
@@ -282,31 +288,122 @@ local function update(oldX,oldY,x,y,map)
   map[y][x] = sprites.character
 end
 
+if os.getOS() == "windows" then
+  os.execute("title "..strReplace(strings.title,_G.Vers,firstToUpper(os.getOS())))
+else
+  os.execute([[set-title(){
+  ORIG=$PS1
+  TITLE="\e]2;$@\a"
+  PS1=${ORIG}${TITLE}
+  }]].."\nset-title \""..strReplace(strings.title,_G.Vers,firstToUpper(os.getOS())).."\"")
+end
+
 --===============================
 --==            MAP            ==
 --===============================
 --[[
 TODO:
+START UI FEATURES:
+[R]  - Restart
+[M]  - More options tab
+More options tab sub-menus
+Updates (Haves all update cmds + change log) / Scores (To delete the scores / view them...) /  
+
+Update sub-menu:
+[U]  - Update via GIT and install it if not installed, have a choice between the latest release or the in-dev version and will start another CMD + close the main process to do that
+[UD] - Update and install the update in a new directory
+[UC] - Check for available updates without installing them
+[C]  - Print GitHub repo + change log
+[CU] - Print change log of available updates if any
+
+Scores sub-menu:
+[S]  - View scores for a map
+[SP] - Transfer the scores to a human-readable text file
+Don't close until a maze is picked OR exit is selected
+
+
+
+Colored characters depending on the type (customizable)
+Other floors for the maps
+V OR ^ depending on direction - Enemy that goes up/down only (Must change default spike sprite; suggestion: *)
+> OR < depending on direction - Enemy that goes left/right only
+X - Enemy that goes random directions
+D - Wall that closes when you pass through it
+F - Same as above but with an invisible wall
++ - Jumps over the wall in front of you IF POSSIBLE
+& - Closed door controlled by levers
+| - Lever for doors, all of them must be enabled to open door
+° - Easter egg, if walked on does crap to the map
 ]]
+
 local map, spawnX, spawnY, sizeX, sizeY, x, y
 local teleport = {X1 = -1, X2 = -1, Y1 = -1, Y2 = -1}
 local invis_wall = {}
 
-print("===| What maze do you wanna play? |===")
+::MENU::
+print(strings.menu.maze)
 if os.getOS() == "windows" then
   os.execute("dir /b \""..config.mazeDir.."\\*"..config.mazeExt.."\"")
 else
-  print("(Just write the file name, the directory isn't required.)")
+  print(strings.menu.mazeLinux)
   os.execute("find "..config.mazeDir.." -iname \"*"..config.mazeExt.."\"")
 end
-print("\n==========| Other options: |==========")
-print("Random (Might not be possible to finish)")
-print("Delete all scores (D)")
-print("Delete specific score (DS)")
-print("Exit")
+print(strings.menu.random)
+print(strings.menu.more)
+print(strings.menu.exit)
 
 io.write("\n> ")
-local mapStr = io.read()
+local mapStr = io.read():upper()
+
+if mapStr:upper() == "M" then
+  print(strings.menu.others)
+  print(strings.menu.deleteAll)
+  print(strings.menu.deleteSpec)
+  print()
+  print("WIP:")
+  print(strings.menu.update)
+  print(strings.menu.updateDir)
+  print(strings.menu.updateCheck)
+  print(strings.menu.changelog)
+  print(strings.menu.changelogCheck)
+  print()
+  print(strings.menu.scores)
+  print(strings.menu.scoresTxt)
+  print()
+  print(strings.menu.Return)
+  io.write("\n> ")
+  mapStr = io.read():upper()
+end
+
+if mapStr == "R" then
+  goto MENU
+elseif mapStr == "U" then
+  if os.execute("git --version") then
+    if os.getOS() == "windows" then
+      local cmd = [[@echo off
+set D=%CD%
+echo.move "%CD%\mazes" "%temp%/mazes"> ../tmp.bat
+echo.rmdir /S %D%>> ../tmp.bat
+echo.git clone https://github.com/FolfyBlue/A-MazeInc.git>> ../tmp.bat
+echo.move /Y "%temp%\mazes" A-MazeInc>> ../tmp.bat
+echo.del tmp.bat>>../tmp.bat
+cd ..
+tmp.bat]]
+      local f = io.open("update.bat","w+")
+      f:write(cmd)
+      f:close()
+      os.execute("update.bat")
+      os.execute("cmd /k lua A-MazeInc.lua")
+      os.exit()
+    else
+      print("Linux support WIP")
+    end
+  else
+    print(strings.menu.gitError)
+  end
+elseif mapStr == "" then
+
+end
 
 if mapStr:upper() == "D" then
   local scoreList
@@ -326,7 +423,7 @@ if mapStr:upper() == "D" then
   end
   os.exit()
 elseif mapStr:upper() == "DS" then
-  print("Delete scores for which map?")
+  print(strings.menu.deleteSpecWhich)
   local YourTimeHasBegun = io.read():gsub(config.scoresExt,""):gsub(".maze","")
   os.remove(config.scoresDir.."/"..YourTimeHasBegun..config.scoresExt)
   os.exit()
@@ -341,10 +438,10 @@ if mapStr:lower() == "random" then
 else
   local mapStr = mapStr:gsub("%"..config.mazeDir,"")..config.mazeExt
   mapName = mapStr:match("(.+)%..+")
-  print("Loading the maze...")
+  print(strings.loading)
   print(funfact[math.random(#funfact)])
   local mapf = io.open(config.mazeDir.."/"..mapStr,"rb")
-  if not mapf then error("Was the file name correctly spelled?") end
+  if not mapf then error(strings.mapError.loading) end
   map = mapf:read("*a")                             --READING MAP FILE
   mapf:close()  
 end
@@ -365,7 +462,7 @@ end
 
 local _,errorchk = map:gsub(sprites.character, "")
 if errorchk > 1 then
-  error("There can be only one you.")
+  error(strings.mapError.characters)
 end
 
 CheckMap(map)
@@ -399,25 +496,40 @@ for _,y in pairs(map) do
   end
 end
 
-print("Maze loaded! If you see this I hope you have a nice day.")
+print(strings.loaded)
 clear()
 --===============================
 --==         GAME LOOP         ==
 --===============================
+--[[TODO:
+Resize in game loop
+Resize if debug turned on
+Show moves & time on the side 
+Show #1 in moves and #1 in time on the High Score
+A square around the map to see it (Example:
+====
+=#O=
+=@ =
+====
 
-print("Controls:")
+C - See controls & start screen
+P - Pause (Maybe fuse with above suggestion?)
+If in debug: F - Enable placing of elements, if enabled instead of moving it'll place an element on the selected direction
+
+]]
+
+print(strings.startInfo.controls)
 for direction,keys in pairs(controls.move) do
-  print("To go "..direction..": "..table.concat(keys, " OR "):upper())
+  print(strReplace(strings.startInfo.move,direction):upper()..table.concat(keys, strings.startInfo.OR))
 end
 print()
 for action,keys in pairs(controls.others) do
-  print("To "..action..": "..table.concat(keys, " OR "):upper())
+  print(strReplace(strings.startInfo.action,action):upper()..table.concat(keys, strings.startInfo.OR))
 end
 
+print(strReplace(strings.startInfo.objects,sprites.character,sprites.wall,sprites.spikes,sprites.teleport,sprites.goal))
 
-print("Your character is "..sprites.character.." and the walls are "..sprites.wall..". But beware, some walls are invisible or you could even ecounter spikes "..sprites.spikes.." !\nYou may sometimes encounter telepoters that look like this: "..sprites.teleport.." but we're low on energy, so you can only use them once. But the most important of all, your goal is "..sprites.goal.."!")
-
-print("Press ENTER to start!")
+print(strings.startInfo.start)
 io.read()
 
 local timer = os.time()
@@ -439,7 +551,7 @@ while true do
     print("moves = "..moves.." started at: "..timer.." ("..(os.time() - timer).."s)") 
   end
   
-  if x > sizeX or y > sizeY then error("How'd you get over here anyways?") end                          --ERROR CATCHING
+  if x > sizeX or y > sizeY then error(strings.mapError.how) end                          --ERROR CATCHING
   
   for _,y in pairs(map) do
     for _,x in pairs(y) do 
@@ -502,5 +614,5 @@ while true do
   clear()
 end
 
-print("You somehow got here. Press ENTER to continue.")
+print(strings.somehow)
 io.read()

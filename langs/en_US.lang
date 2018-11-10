@@ -1,0 +1,66 @@
+return {
+  ["funfacts"] = {
+    "I decided to remake this maze because I was bored in class. Yup, that was why.",
+    "I streamed the developement of this on my twitch channel. Promotion time! https://www.twitch.tv/folfy_blue",
+  },
+
+  ["error"] = "AN ERROR OCCURED:\n",
+  
+  ["mapError"] = {
+    ["walls"] = "You probably need a map to play right? With walls and stuff.",
+    ["goal"] = "Hey! what's your goal?",
+    ["ground"] = "Where will you walk? Certainly not on the non-existing ground.",
+    ["character"] = "You can't play without a character, buddy. I tried once, it went badly.",
+    ["teleport"] = "You can only have two teleporters max! It's just like shoes!",
+    ["loading"] = "Was the file name correctly spelled?",
+    ["characters"] = "There can be only one you.",
+    ["how"] = "How'd you get over here anyways?"
+  },
+
+  ["highscores"] = "%1 completed this maze in: %2 secs and %3 moves",
+  ["username"] = "ENTER YOUR USERNAME:",
+
+  ["menu"] = {
+    ["maze"] = "===| What maze do you wanna play? |===",
+    ["mazeLinux"] = "(Just write the file name, the directory isn't required.)",
+    ["others"] = "\n==========| Other options: |==========",
+    ["random"] = "Random (Might not be possible to finish)",
+    ["deleteAll"] = "Delete all scores (D)",
+    ["deleteSpec"] = "Delete specific score (DS)",
+    ["deleteSpecWhich"] = "Delete scores for which map?",
+    ["exit"] = "Exit",
+    ["more"] = "Press [M] for more options.",
+    ["update"] = "[U] Tries to update.",
+    ["updateDir"] = "[UD] Install the update in another directory.",
+    ["updateCheck"] = "[UC] Tells you if an update is avaible.",
+    ["changelog"] = "[C] Show you the change log.",
+    ["changelogCheck"] = "[CC] Show you the changelog of an upcomming update.",
+    ["scores"] = "[S] Show you the scores of a selected map.",
+    ["scoresTxt"] = "[ST] Transfer the scores to a human-readable text file.",
+    ["Return"] = "[R] Go back to previous menu.",
+    ["gitError"] = "You need git to update! Install it there: https://gitforwindows.org/",
+    ["gitwhich"] = "Do you want to get the latest release [L] or in-dev release [I]?",
+  },
+
+  ["loading"] = "Loading the maze...",
+  ["loaded"] = "Maze loaded! If you see this I hope you have a nice day.",
+
+  ["startInfo"] = {
+    ["controls"] = "Controls:",
+    ["move"] = "To go %1: ",
+    ["OR"] = " OR ",
+    ["action"] = "To %1: ",
+    ["objects"] = [[
+Your character is %1
+The walls are %2
+But beware, some walls are invisible. 
+There are spikes: %3
+You may sometimes encounter teleporters that look like this: %4 but we're low on energy, so you can only use them once. 
+Most importently, your goal is %5]],
+   ["start"] = "Press ENTER to start!",
+  },
+
+  ["somehow"] = "You somehow got here. Press ENTER to continue.",
+  ["title"] = "A-Maze Inc V%1 - Made by Folfy Blue - %2 edition",
+
+}
