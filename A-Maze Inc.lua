@@ -430,7 +430,8 @@ tmp.bat]];cmd = cmd:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_S
       f:close()
       os.execute("update.bat")
       os.execute("start cmd /k \"cd ../A-MazeInc/ && lua A-Maze Inc.lua\"")
-      os.execute("exit")
+      os.execute("exit ")
+      os.exit()
     else
       local cmd = [[
 D=$PWD
