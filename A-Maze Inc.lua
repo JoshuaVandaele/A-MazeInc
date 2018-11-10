@@ -436,6 +436,7 @@ echo mv "/temp/REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.sh
 echo mv "/temp/REPLACE_ME_SCOREDIR" A-MazeInc>> ../tmp.sh
 echo rm tmp.sh>>../tmp.sh
 cd ..
+chmod +x tmp.sh
 ./tmp.sh]];cmd = cmd:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_SCOREDIR",config.scoresDir)
       local f = io.open("update.sh","w+")
       f:write(cmd)
