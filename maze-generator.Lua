@@ -28,7 +28,7 @@ function generate(maxX,maxY)
     end
   end
 
-  print("Generating..")
+  
   for Y = 1,maxY do
 
     for X = 1,maxX do
@@ -62,7 +62,7 @@ function generate(maxX,maxY)
     end
 
   end
-  print("Generated, converting to string..")
+  
   local mapStr = ""
 
   for _,y in pairs(maze) do
@@ -78,9 +78,9 @@ end
 
 maxX = math.random(1,60)
 maxY = math.random(1,60)
-print(""..maxX.."x"..maxY.." maze.")
+
 
 local map = generate(maxX,maxY)
 
-print("/!\\ I HAVE NO IDEA HOW TO GENERATE MAZES, THIS WAS MADE BY PURE RANDOMNESS AND MIGHT NOT BE POSSIBLE, BLAME YOUR RANDOM SEED. /!\\")
+
 return map
