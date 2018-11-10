@@ -418,7 +418,7 @@ elseif mapStr == "U" then
 set D=%CD%
 echo.move /Y "%CD%\REPLACE_ME_MAZEDIR" "%temp%/REPLACE_ME_MAZEDIR"> ../tmp.bat
 echo.move /Y "%CD%\REPLACE_ME_SCOREDIR" "%temp%/REPLACE_ME_SCOREDIR"> ../tmp.bat
-echo.rmdir /S %D%>> ../tmp.bat
+echo.rmdir /S "%D%">> ../tmp.bat
 echo.git clone https://github.com/FolfyBlue/A-MazeInc.git>> ../tmp.bat
 echo.move /Y "%temp%\REPLACE_ME_MAZEDIR" A-MazeInc>> ../tmp.bat
 echo.move /Y "%temp%\REPLACE_ME_SCOREDIR" A-MazeInc>> ../tmp.bat
