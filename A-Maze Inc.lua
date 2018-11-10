@@ -429,7 +429,7 @@ tmp.bat]];cmd = cmd:gsub("REPLACE_ME_MAZEDIR",config.mazeDir):gsub("REPLACE_ME_S
       f:write(cmd)
       f:close()
       os.execute("update.bat")
-      os.execute("start cmd /k lua A-MazeInc.lua")
+      os.execute("start cmd /k \"cd ../A-MazeInc/ && lua A-Maze Inc.lua\"")
       os.execute("exit")
     else
       local cmd = [[
@@ -449,7 +449,7 @@ chmod +x tmp.sh
       f:close()
       os.execute("chmod +x update.sh")
       os.execute("./update.sh")
-      os.execute("cd ../A-Maze\\ Inc.Lua")
+      os.execute("lua ../A-MazeInc/A-Maze\\ Inc.Lua")
       os.exit()
     end
   else
