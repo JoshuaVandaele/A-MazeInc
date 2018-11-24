@@ -465,7 +465,7 @@ elseif mapStr == "UD" then
   end
   mapStr = true
 elseif mapStr == "C" then
-  f = io.open("changelog.cl","r")
+  f = io.open("changelog","r")
   local changelog = f:read("*a")
   print(changelog)
   f:close()
